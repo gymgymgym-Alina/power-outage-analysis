@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Power Outage Analysis</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg: #0f0f1a;
+      --card: #1a1a2e;
+      --accent1: #f7c948;
+      --accent2: #6ee7f7;
+      --accent3: #f76e8a;
+      --text: #f0eeff;
+      --muted: #9090b0;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Nunito', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      overflow-x: hidden;
+    }
+
+    .stars {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .star {
+      position: absolute;
+      border-radius: 50%;
+      background: white;
+      animation: twinkle var(--d) ease-in-out infinite alternate;
+    }
+    @keyframes twinkle {
+      from { opacity: 0.1; transform: scale(0.8); }
+      to   { opacity: 0.9; transform: scale(1.2); }
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      max-width: 720px;
+      width: 100%;
+      text-align: center;
+    }
+
+    .bolt {
+      font-size: 4rem;
+      animation: pulse 2s ease-in-out infinite;
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1) rotate(-5deg); filter: drop-shadow(0 0 8px var(--accent1)); }
+      50%       { transform: scale(1.15) rotate(5deg); filter: drop-shadow(0 0 24px var(--accent1)); }
+    }
+
+    h1 {
+      font-family: 'Space Mono', monospace;
+      font-size: clamp(1.8rem, 5vw, 3rem);
+      font-weight: 700;
+      line-height: 1.15;
+      margin-bottom: 0.75rem;
+    }
+   
+    .subtitle {
+      color: var(--muted);
+      font-size: 1.05rem;
+      margin-bottom: 2.5rem;
+      line-height: 1.6;
+    }
+
+    footer {
+      color: var(--muted);
+      font-size: 0.8rem;
+      margin-top: 1rem;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="stars" id="stars"></div>
+
+  <div class="container">
+    <span class="bolt">⚡</span>
+    <h1>Power <span class="highlight">Outage</span><br>Analysis</h1>
+    <p class="subtitle">Exploring major U.S. power outages from 2000–2016<br>and what makes them last longer.</p>
+
+    <footer>DSC 80 - Fei (Yinfei) Liang, Alina (Yueming) Gao </footer>
+  </div>
+
+  <script>
+    const container = document.getElementById('stars');
+    for (let i = 0; i < 80; i++) {
+      const s = document.createElement('div');
+      s.className = 'star';
+      const size = Math.random() * 2.5 + 0.5;
+      s.style.cssText = `
+        width:${size}px; height:${size}px;
+        top:${Math.random()*100}%; left:${Math.random()*100}%;
+        --d:${(Math.random()*3+1).toFixed(1)}s;
+        animation-delay:${(Math.random()*3).toFixed(1)}s;
+      `;
+      container.appendChild(s);
+    }
+  </script>
+</body>
+</html>
