@@ -242,8 +242,9 @@
   <tr><td><code>CLIMATE.REGION</code></td><td>Nominal (9 categories)</td><td>OneHotEncoder — avoids false ordinal relationships</td></tr>
   <tr><td><code>MONTH</code></td><td>Ordinal (1–12)</td><td>Passed through as numeric — natural ordering is meaningful</td></tr>
 </table>
-<p style="margin-top:0.75rem;">The baseline accuracy was <strong>50.66%</strong>. This is below majority-class guessing (~49% for severe weather), confirming the model needs more features.</p>
-    </div>
+<p style="margin-top:0.75rem;">The baseline accuracy was <strong>50.66%</strong>. 
+  This is slightly above majority-class guessing (~49% for severe weather), showing that climate region and month provide a small signal. However, the model is still too simple and needs more features to be useful.
+   </div>
 
     <div class="section">
       <h2>Final Model</h2>
