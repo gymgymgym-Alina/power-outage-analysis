@@ -160,6 +160,18 @@
       <p>This project analyzes a dataset of major power outages in the United States from 2000 to 2016. The dataset contains 1,534 outage events with 56 variables, including outage duration, cause category, climate region, and the number of customers affected.</p>
       <p>Our research question is: Does the cause of a power outage (specifically severe weather versus other causes) significantly affect how long the outage lasts?</p>
       <p>Power outages affect millions of people every year. When the power goes out, hospitals lose electricity, food spoils, and people lose heat or air conditioning. Knowing what causes the longest outages can help power companies prepare better and fix problems faster. Since storms and extreme weather are becoming more common, it is especially important to understand whether weather-related outages tend to last longer than outages from other causes.</p>
+      <p>The columns most relevant to our question are:</p>
+      <table>
+        <tr><th>Column</th><th>Description</th></tr>
+        <tr><td><code>CAUSE.CATEGORY</code></td><td>Category of the event that caused the outage (e.g., severe weather, intentional attack, equipment failure — 7 categories total)</td></tr>
+        <tr><td><code>OUTAGE.DURATION</code></td><td>Duration of the outage in minutes</td></tr>
+        <tr><td><code>CLIMATE.REGION</code></td><td>U.S. climate region where the outage occurred (9 regions defined by NCEI)</td></tr>
+        <tr><td><code>ANOMALY.LEVEL</code></td><td>Oceanic El Niño/La Niña index — a numeric measure of climate anomaly severity for that month</td></tr>
+        <tr><td><code>CUSTOMERS.AFFECTED</code></td><td>Number of customers affected by the outage event</td></tr>
+        <tr><td><code>MONTH</code></td><td>Month in which the outage began (1–12)</td></tr>
+        <tr><td><code>U.S._STATE</code></td><td>U.S. state where the outage occurred</td></tr>
+      </table>
+    
     </div>
 
     <div class="section">
@@ -199,6 +211,9 @@
       <p>We believe DEMAND.LOSS.MW is likely NMAR. Utility companies may intentionally leave this field blank when the demand loss was caused by negligence or operational error, to limit liability exposure. The value is more likely missing because of what the value itself is, not because of other recorded columns. Additional data such as regulatory incident reports or insurance filings could help explain the missingness, potentially making it MAR.</p>
       <p>We tested whether the missingness of DEMAND.LOSS.MW depends on CAUSE.CATEGORY (TVD=0.179, p&lt;0.001) and OUTAGE.DURATION (difference=128.8 minutes, p=0.660). The missingness does depend on cause category, suggesting certain types of outages are more likely to have demand loss data missing. It does not depend on outage duration, suggesting the length of the outage does not influence whether this value was recorded.</p>
       <iframe class="plot-frame" src="plots/missingness_demand_cc.html"></iframe>
+      <p>The plot below shows the permutation distribution for the OUTAGE.DURATION test. The observed difference in means falls well within the null distribution, confirming no significant dependency.</p>
+      <iframe class="plot-frame" src="plots/missingness_demand_duration.html"></iframe>
+     
     </div>
 
     <div class="section">
@@ -221,6 +236,13 @@
     <div class="section">
       <h2>Baseline Model</h2>
       <p>Our baseline model is a Decision Tree classifier with a maximum depth of 2, trained to predict the cause category of a power outage using two features: climate region (nominal, one-hot encoded) and month (ordinal). We kept the model intentionally simple as a starting point. The baseline accuracy was 43.75%.</p>
+      <p>Our baseline model is a <strong>Decision Tree classifier</strong> (max_depth=2) implemented as a single <code>sklearn Pipeline</code>. It uses two features:</p>
+<table>
+  <tr><th>Feature</th><th>Type</th><th>Encoding</th></tr>
+  <tr><td><code>CLIMATE.REGION</code></td><td>Nominal (9 categories)</td><td>OneHotEncoder — avoids false ordinal relationships</td></tr>
+  <tr><td><code>MONTH</code></td><td>Ordinal (1–12)</td><td>Passed through as numeric — natural ordering is meaningful</td></tr>
+</table>
+<p style="margin-top:0.75rem;">The baseline accuracy was <strong>50.66%</strong>. This is below majority-class guessing (~49% for severe weather), confirming the model needs more features.</p>
     </div>
 
     <div class="section">
