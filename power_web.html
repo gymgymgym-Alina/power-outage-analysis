@@ -176,10 +176,10 @@
       </table>
 
       <p style="margin-top:1rem;">The chart below shows the number of outages by cause category. Severe weather is by far the most common cause, accounting for roughly half of all outages.</p>
-      <iframe class="plot-frame" src="num_power_outages_cc.html"></iframe>
+      <iframe class="plot-frame" src="plots/num_power_outages_cc.html"></iframe>
 
       <p style="margin-top:1rem;">The box plot below shows outage duration by cause category. Severe weather outages have much higher median durations and more extreme outliers, which directly motivates our research question.</p>
-      <iframe class="plot-frame" src="outage_duration_cc_box.html"></iframe>
+      <iframe class="plot-frame" src="plots/outage_duration_cc_box.html"></iframe>
 
       <p style="margin-top:1rem;">Mean and median outage duration grouped by cause category:</p>
       <table>
@@ -198,7 +198,7 @@
       <h2>Assessment of Missingness</h2>
       <p>We believe DEMAND.LOSS.MW is likely NMAR. Utility companies may intentionally leave this field blank when the demand loss was caused by negligence or operational error, to limit liability exposure. The value is more likely missing because of what the value itself is, not because of other recorded columns. Additional data such as regulatory incident reports or insurance filings could help explain the missingness, potentially making it MAR.</p>
       <p>We tested whether the missingness of DEMAND.LOSS.MW depends on CAUSE.CATEGORY (TVD=0.179, p&lt;0.001) and OUTAGE.DURATION (difference=128.8 minutes, p=0.660). The missingness does depend on cause category, suggesting certain types of outages are more likely to have demand loss data missing. It does not depend on outage duration, suggesting the length of the outage does not influence whether this value was recorded.</p>
-      <iframe class="plot-frame" src="missingness_demand_cc.html"></iframe>
+      <iframe class="plot-frame" src="plots/missingness_demand_cc.html"></iframe>
     </div>
 
     <div class="section">
@@ -208,7 +208,7 @@
       <p><strong>Test Statistic:</strong> Difference in mean outage duration (severe weather minus all other causes). This is appropriate because we are comparing a numerical variable across two groups and care about the direction of the difference.</p>
       <p><strong>Significance Level:</strong> 0.05 &nbsp;|&nbsp; <strong>P-value:</strong> &lt;0.001</p>
       <p>Since the p-value is below our significance level, we reject the null hypothesis. This suggests that severe weather outages tend to last significantly longer than outages from other causes. However, since this is an observational study and not a randomized controlled trial, we cannot conclude that severe weather directly causes longer outages.</p>
-      <iframe class="plot-frame" src="hypothesis_test.html"></iframe>
+      <iframe class="plot-frame" src="plots/hypothesis_test.html"></iframe>
     </div>
 
     <div class="section">
@@ -227,7 +227,7 @@
       <h2>Final Model</h2>
       <p>We switched to a RandomForestClassifier and added three features on top of the baseline. ANOMALY.LEVEL was added because climate anomaly severity is directly tied to how likely an outage is caused by weather. Extreme anomaly values signal unusual atmospheric conditions that cause severe weather events. OUTAGE.DURATION was added because the cause of an outage fundamentally shapes how long recovery takes. Severe weather damages widespread infrastructure while intentional attacks tend to be more targeted and resolved faster. CUSTOMERS.AFFECTED was added because weather events typically knock out power across large regions affecting many customers at once, while causes like equipment failure tend to be more localized. We imputed missing values in CUSTOMERS.AFFECTED with the median rather than dropping rows, to preserve as much training data as possible.
         We chose RandomForestClassifier over the baseline Decision Tree because it builds many trees and averages their predictions, reducing overfitting. We tuned n_estimators (50, 100, 200) and max_depth (5, 10, None) using GridSearchCV with 5-fold cross-validation. The best parameters were n_estimators=100 and max_depth=None. The final model achieved 75.33% accuracy compared to the baseline's 43.75%, a improvement of over 31 percentage points.</p>
-        <iframe class="plot-frame" src="confusion_matrix.html"></iframe>
+        <iframe class="plot-frame" src="plots/confusion_matrix.html"></iframe>
       </div>
 
     <div class="section">
@@ -238,7 +238,7 @@
       <p><strong>Alternative Hypothesis:</strong> Our model is unfair. Its accuracy is lower for western outages than for non-western outages.</p>
       <p><strong>Test Statistic:</strong> Difference in accuracy (West minus Non-West) &nbsp;|&nbsp; <strong>Significance Level:</strong> 0.05</p>
       <p>The observed difference was -0.1771 (West: 0.604167, Non-West: 0.781250). The p-value was 0.0070, which is below 0.05, so we reject the null hypothesis. Our model performs significantly worse on western outages, likely because the western US has a distinct outage profile (wildfires, droughts) that is underrepresented in the training data.</p>
-      <iframe class="plot-frame" src="perm_test_diff_accuracy.html"></iframe>
+      <iframe class="plot-frame" src="plots/perm_test_diff_accuracy.html"></iframe>
     </div>
 
     <footer>DSC 80 - Fei (Yinfei) Liang, Alina (Yueming) Gao</footer>
