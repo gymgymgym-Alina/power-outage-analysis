@@ -233,10 +233,9 @@
 
     <div class="section">
       <h2>Framing a Prediction Problem</h2>
-      <p>We are building a multiclass classifier to predict CAUSE.CATEGORY, which has 7 categories including severe weather, intentional attack, and equipment failure. We chose this column because understanding what caused an outage is valuable for utility companies responding to incidents. If the cause can be predicted from early observable features, resources can be dispatched more effectively.
-        We use accuracy as our evaluation metric since our goal is overall correct classification across all categories. We chose accuracy over F1-score because the class distribution, while imbalanced, is not extreme enough to make accuracy misleading. Severe weather dominates but other categories still have meaningful representation.
-        The features we use are CLIMATE.REGION, ANOMALY.LEVEL, OUTAGE.DURATION, and CUSTOMERS.AFFECTED. These are all features that would be known at the time of prediction. Climate region and anomaly level are known before the outage is resolved, and outage duration and customers affected are typically recorded early in the incident response process.</p>
-    </div>
+        <p>We build a multiclass classifier to predict the cause of a power outage (CAUSE.CATEGORY) using four features that are all observable before an official cause is determined. Climate region and anomaly level capture the environmental conditions surrounding the outage. Month reflects seasonal patterns that influence the likelihood of certain causes, such as severe weather being more common in summer. Number of customers affected is recorded early in incident response and gives a sense of the outage's scale, which tends to differ across causes. Together, these features represent information a utility company would realistically have access to at the start of an incident, before any formal cause classification has been made.</p>
+        </p>
+      </div>
 
     <div class="section">
       <h2>Baseline Model</h2>
