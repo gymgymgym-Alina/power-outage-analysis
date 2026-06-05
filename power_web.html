@@ -175,7 +175,7 @@
     </div>
 
     <div class="section">
-      <h2>Data Cleaning & EDA</h2>
+      <h2>Data Cleaning and Exploratory Data Analysis</h2>
       <p>The raw Excel file contained 5 header rows of metadata before the actual data. We used skiprows=5 and header=0 when reading it, then dropped the first row (which contained units) and the variables column, which was entirely empty. This left us with 1,534 rows and 56 columns.</p>
       <p>Head of the cleaned DataFrame:</p>
       <table>
@@ -210,8 +210,11 @@
       <h2>Assessment of Missingness</h2>
       <p>We believe DEMAND.LOSS.MW is likely NMAR. Utility companies may intentionally leave this field blank when the demand loss was caused by negligence or operational error, to limit liability exposure. The value is more likely missing because of what the value itself is, not because of other recorded columns. Additional data such as regulatory incident reports or insurance filings could help explain the missingness, potentially making it MAR.</p>
       <p>We tested whether the missingness of DEMAND.LOSS.MW depends on CAUSE.CATEGORY (TVD=0.179, p&lt;0.001) and OUTAGE.DURATION (difference=128.8 minutes, p=0.660). The missingness does depend on cause category, suggesting certain types of outages are more likely to have demand loss data missing. It does not depend on outage duration, suggesting the length of the outage does not influence whether this value was recorded.</p>
+      
+      <p>Test 1 — CAUSE.CATEGORY (TVD = 0.179, p &lt; 0.001): The histogram below shows the empirical null distribution of the Total Variation Distance (TVD) between the cause-category distributions of rows where <code>DEMAND.LOSS.MW</code> is missing versus not missing. Each bar represents how often a particular TVD arose by chance under random shuffling. The observed TVD of 0.179 (red dashed line) falls far to the right of the null distribution — nearly no permutation produced a TVD this large — giving a p-value close to zero. This means the missingness of <code>DEMAND.LOSS.MW</code> is <em>not</em> independent of cause category: certain outage types (e.g., intentional attacks) are far more likely to have the demand-loss field left blank, suggesting the data are MAR with respect to cause.</p>
       <iframe class="plot-frame" src="plots/missingness_demand_cc.html"></iframe>
-      <p>The plot below shows the permutation distribution for the OUTAGE.DURATION test. The observed difference in means falls well within the null distribution, confirming no significant dependency.</p>
+      
+      <p>Test 2 — OUTAGE.DURATION (|Diff in Means| = 128.8 min, p = 0.660): The histogram below shows the null distribution of the absolute difference in mean outage duration between rows where <code>DEMAND.LOSS.MW</code> is missing versus present. The observed difference of 128.8 minutes (red dashed line) sits well inside the bulk of the null distribution — roughly 66% of random shuffles produced a larger gap — giving a p-value of 0.660. We fail to reject the null hypothesis, meaning the missingness of <code>DEMAND.LOSS.MW</code> does not depend on outage duration. Whether an outage lasted a short or a long time has no statistically detectable relationship with whether the demand-loss figure was recorded.</p>
       <iframe class="plot-frame" src="plots/missingness_demand_duration.html"></iframe>
      
     </div>
