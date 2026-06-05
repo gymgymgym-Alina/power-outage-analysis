@@ -10,8 +10,6 @@
       --bg: #0f0f1a;
       --card: #1a1a2e;
       --accent1: #f7c948;
-      --accent2: #6ee7f7;
-      --accent3: #f76e8a;
       --text: #f0eeff;
       --muted: #9090b0;
     }
@@ -26,7 +24,6 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
       padding: 2rem;
       overflow-x: hidden;
     }
@@ -53,7 +50,12 @@
       z-index: 1;
       max-width: 720px;
       width: 100%;
+    }
+
+    /* Original hero */
+    .hero {
       text-align: center;
+      padding: 4rem 0 3rem;
     }
 
     .bolt {
@@ -74,18 +76,70 @@
       line-height: 1.15;
       margin-bottom: 0.75rem;
     }
-   
+
     .subtitle {
       color: var(--muted);
       font-size: 1.05rem;
-      margin-bottom: 2.5rem;
+      margin-bottom: 0;
       line-height: 1.6;
+    }
+
+    /* Simple sections */
+    .section {
+      margin-bottom: 2.5rem;
+    }
+
+    .section h2 {
+      font-size: 1.2rem;
+      font-weight: 800;
+      margin-bottom: 0.75rem;
+      padding-bottom: 0.4rem;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .section p {
+      color: var(--muted);
+      line-height: 1.7;
+      margin-bottom: 0.75rem;
+      font-size: 0.97rem;
+    }
+
+    .section p:last-child { margin-bottom: 0; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 0.75rem;
+      font-size: 0.88rem;
+    }
+    th {
+      text-align: left;
+      padding: 0.5rem 0.75rem;
+      border-bottom: 1px solid rgba(255,255,255,0.15);
+      color: var(--text);
+      font-weight: 700;
+    }
+    td {
+      padding: 0.45rem 0.75rem;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      color: var(--muted);
+    }
+
+    .plot-frame {
+      width: 100%;
+      height: 450px;
+      border: none;
+      border-radius: 8px;
+      margin-top: 0.75rem;
+      background: white;
     }
 
     footer {
       color: var(--muted);
       font-size: 0.8rem;
       margin-top: 1rem;
+      text-align: center;
+      padding-bottom: 2rem;
     }
   </style>
 </head>
@@ -94,11 +148,100 @@
   <div class="stars" id="stars"></div>
 
   <div class="container">
-    <span class="bolt">⚡</span>
-    <h1>Power <span class="highlight">Outage</span><br>Analysis</h1>
-    <p class="subtitle">Exploring major U.S. power outages from 2000–2016<br>and what makes them last longer.</p>
 
-    <footer>DSC 80 - Fei (Yinfei) Liang, Alina (Yueming) Gao </footer>
+    <div class="hero">
+      <span class="bolt">⚡</span>
+      <h1>Power Outage Analysis</h1>
+      <p class="subtitle">Exploring major U.S. power outages from 2000–2016<br>and what makes them last longer.</p>
+    </div>
+
+    <div class="section">
+      <h2>Introduction</h2>
+      <p>This project analyzes a dataset of major power outages in the United States from 2000 to 2016. The dataset contains 1,534 outage events with 56 variables, including outage duration, cause category, climate region, and the number of customers affected.</p>
+      <p>Our research question is: Does the cause of a power outage (specifically severe weather versus other causes) significantly affect how long the outage lasts?</p>
+      <p>Power outages affect millions of people every year. When the power goes out, hospitals lose electricity, food spoils, and people lose heat or air conditioning. Knowing what causes the longest outages can help power companies prepare better and fix problems faster. Since storms and extreme weather are becoming more common, it is especially important to understand whether weather-related outages tend to last longer than outages from other causes.</p>
+    </div>
+
+    <div class="section">
+      <h2>Data Cleaning & EDA</h2>
+      <p>The raw Excel file contained 5 header rows of metadata before the actual data. We used skiprows=5 and header=0 when reading it, then dropped the first row (which contained units) and the variables column, which was entirely empty. This left us with 1,534 rows and 56 columns.</p>
+      <p>Head of the cleaned DataFrame:</p>
+      <table>
+        <tr><th>OBS</th><th>YEAR</th><th>MONTH</th><th>U.S._STATE</th><th>CLIMATE.REGION</th><th>CAUSE.CATEGORY</th><th>OUTAGE.DURATION</th></tr>
+        <tr><td>1</td><td>2011</td><td>7</td><td>Minnesota</td><td>East North Central</td><td>severe weather</td><td>3060</td></tr>
+        <tr><td>2</td><td>2014</td><td>5</td><td>Minnesota</td><td>East North Central</td><td>intentional attack</td><td>1</td></tr>
+        <tr><td>3</td><td>2010</td><td>10</td><td>Minnesota</td><td>East North Central</td><td>severe weather</td><td>3000</td></tr>
+        <tr><td>4</td><td>2012</td><td>6</td><td>Minnesota</td><td>East North Central</td><td>severe weather</td><td>2550</td></tr>
+        <tr><td>5</td><td>2015</td><td>7</td><td>Minnesota</td><td>East North Central</td><td>severe weather</td><td>1740</td></tr>
+      </table>
+
+      <p style="margin-top:1rem;">The chart below shows the number of outages by cause category. Severe weather is by far the most common cause, accounting for roughly half of all outages.</p>
+      <iframe class="plot-frame" src="num_power_outages_cc.html"></iframe>
+
+      <p style="margin-top:1rem;">The box plot below shows outage duration by cause category. Severe weather outages have much higher median durations and more extreme outliers, which directly motivates our research question.</p>
+      <iframe class="plot-frame" src="outage_duration_cc_box.html"></iframe>
+
+      <p style="margin-top:1rem;">Mean and median outage duration grouped by cause category:</p>
+      <table>
+        <tr><th>Cause Category</th><th>Mean Duration (min)</th><th>Median Duration (min)</th><th>Count</th></tr>
+        <tr><td>fuel supply emergency</td><td>13484.0</td><td>3960.0</td><td>38</td></tr>
+        <tr><td>severe weather</td><td>3884.0</td><td>2460.0</td><td>744</td></tr>
+        <tr><td>equipment failure</td><td>1816.9</td><td>221.0</td><td>55</td></tr>
+        <tr><td>public appeal</td><td>1468.4</td><td>455.0</td><td>69</td></tr>
+        <tr><td>system operability disruption</td><td>728.9</td><td>215.0</td><td>123</td></tr>
+        <tr><td>intentional attack</td><td>430.0</td><td>56.0</td><td>403</td></tr>
+        <tr><td>islanding</td><td>200.5</td><td>77.5</td><td>44</td></tr>
+      </table>
+    </div>
+
+    <div class="section">
+      <h2>Assessment of Missingness</h2>
+      <p>We believe DEMAND.LOSS.MW is likely NMAR. Utility companies may intentionally leave this field blank when the demand loss was caused by negligence or operational error, to limit liability exposure. The value is more likely missing because of what the value itself is, not because of other recorded columns. Additional data such as regulatory incident reports or insurance filings could help explain the missingness, potentially making it MAR.</p>
+      <p>We tested whether the missingness of DEMAND.LOSS.MW depends on CAUSE.CATEGORY (TVD=0.179, p&lt;0.001) and OUTAGE.DURATION (difference=128.8 minutes, p=0.660). The missingness does depend on cause category, suggesting certain types of outages are more likely to have demand loss data missing. It does not depend on outage duration, suggesting the length of the outage does not influence whether this value was recorded.</p>
+      <iframe class="plot-frame" src="missingness_demand_cc.html"></iframe>
+    </div>
+
+    <div class="section">
+      <h2>Hypothesis Testing</h2>
+      <p><strong>Null Hypothesis:</strong> The distribution of outage duration for severe weather events is the same as for non-severe weather events. Any observed difference is due to random chance.</p>
+      <p><strong>Alternative Hypothesis:</strong> Power outages caused by severe weather tend to last longer on average than those caused by other factors.</p>
+      <p><strong>Test Statistic:</strong> Difference in mean outage duration (severe weather minus all other causes). This is appropriate because we are comparing a numerical variable across two groups and care about the direction of the difference.</p>
+      <p><strong>Significance Level:</strong> 0.05 &nbsp;|&nbsp; <strong>P-value:</strong> &lt;0.001</p>
+      <p>Since the p-value is below our significance level, we reject the null hypothesis. This suggests that severe weather outages tend to last significantly longer than outages from other causes. However, since this is an observational study and not a randomized controlled trial, we cannot conclude that severe weather directly causes longer outages.</p>
+      <iframe class="plot-frame" src="hypothesis_test.html"></iframe>
+    </div>
+
+    <div class="section">
+      <h2>Framing a Prediction Problem</h2>
+      <p>We are building a multiclass classifier to predict CAUSE.CATEGORY, which has 7 categories including severe weather, intentional attack, and equipment failure. We chose this column because understanding what caused an outage is valuable for utility companies responding to incidents. If the cause can be predicted from early observable features, resources can be dispatched more effectively.
+        We use accuracy as our evaluation metric since our goal is overall correct classification across all categories. We chose accuracy over F1-score because the class distribution, while imbalanced, is not extreme enough to make accuracy misleading. Severe weather dominates but other categories still have meaningful representation.
+        The features we use are CLIMATE.REGION, ANOMALY.LEVEL, OUTAGE.DURATION, and CUSTOMERS.AFFECTED. These are all features that would be known at the time of prediction. Climate region and anomaly level are known before the outage is resolved, and outage duration and customers affected are typically recorded early in the incident response process.</p>
+    </div>
+
+    <div class="section">
+      <h2>Baseline Model</h2>
+      <p>Our baseline model is a Decision Tree classifier with a maximum depth of 2, trained to predict the cause category of a power outage using two features: climate region (nominal, one-hot encoded) and month (ordinal). We kept the model intentionally simple as a starting point. The baseline accuracy was 43.75%.</p>
+    </div>
+
+    <div class="section">
+      <h2>Final Model</h2>
+      <p>We switched to a RandomForestClassifier and added three features on top of the baseline. ANOMALY.LEVEL was added because climate anomaly severity is directly tied to how likely an outage is caused by weather. Extreme anomaly values signal unusual atmospheric conditions that cause severe weather events. OUTAGE.DURATION was added because the cause of an outage fundamentally shapes how long recovery takes. Severe weather damages widespread infrastructure while intentional attacks tend to be more targeted and resolved faster. CUSTOMERS.AFFECTED was added because weather events typically knock out power across large regions affecting many customers at once, while causes like equipment failure tend to be more localized. We imputed missing values in CUSTOMERS.AFFECTED with the median rather than dropping rows, to preserve as much training data as possible.
+        We chose RandomForestClassifier over the baseline Decision Tree because it builds many trees and averages their predictions, reducing overfitting. We tuned n_estimators (50, 100, 200) and max_depth (5, 10, None) using GridSearchCV with 5-fold cross-validation. The best parameters were n_estimators=100 and max_depth=None. The final model achieved 75.33% accuracy compared to the baseline's 43.75%, a improvement of over 31 percentage points.</p>
+        <iframe class="plot-frame" src="confusion_matrix.html"></iframe>
+      </div>
+
+    <div class="section">
+      <h2>Fairness Analysis</h2>
+      <p><strong>Group X (West):</strong> Outages in western climate regions (West, Northwest, Southwest)<br>
+         <strong>Group Y (Non-West):</strong> Outages in all other climate regions</p>
+      <p><strong>Null Hypothesis:</strong> Our model is fair. Its accuracy for western and non-western outages is roughly the same, and any observed difference is due to random chance.</p>
+      <p><strong>Alternative Hypothesis:</strong> Our model is unfair. Its accuracy is lower for western outages than for non-western outages.</p>
+      <p><strong>Test Statistic:</strong> Difference in accuracy (West minus Non-West) &nbsp;|&nbsp; <strong>Significance Level:</strong> 0.05</p>
+      <p>The observed difference was -0.1771 (West: 0.604167, Non-West: 0.781250). The p-value was 0.0070, which is below 0.05, so we reject the null hypothesis. Our model performs significantly worse on western outages, likely because the western US has a distinct outage profile (wildfires, droughts) that is underrepresented in the training data.</p>
+      <iframe class="plot-frame" src="perm_test_diff_accuracy.html"></iframe>
+    </div>
+
+    <footer>DSC 80 - Fei (Yinfei) Liang, Alina (Yueming) Gao</footer>
   </div>
 
   <script>
